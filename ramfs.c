@@ -1,5 +1,11 @@
 #include "ramfs.h"
 /* modify this file freely */
+#define RFS (-1)
+
+// To Start the Project, you must know that how to start a struct
+void init_ramfs() {
+  // TODO();
+}
 
 int ropen(const char *pathname, int flags) {
   // TODO();
@@ -33,6 +39,3 @@ int runlink(const char *pathname) {
   // TODO();
 }
 
-void init_ramfs() {
-  // TODO();
-}
