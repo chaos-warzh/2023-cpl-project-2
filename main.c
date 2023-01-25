@@ -1,8 +1,16 @@
 #include "ramfs.h"
 #include <assert.h>
 #include <string.h>
+#include <stdio.h>
 
 int main() {
+//  int i  = 0;
+//  int *ptr = &i;
+//  printf("%p\n", ptr);
+//  i = (int)ptr;
+//  printf("%d\n", i);
+//  ptr = (int *) i;
+//  printf("%p", ptr);
   init_ramfs();
   assert(rmkdir("/dir") == 0);
   assert(rmkdir("//dir") == -1);
