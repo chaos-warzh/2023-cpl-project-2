@@ -1,9 +1,13 @@
 #include "ramfs.h"
 #include <stdlib.h>
 #include <stdbool.h>
+#include <string.h>
+#include <assert.h>
+#include <stdio.h>
 
 #define RF (-1)
 #define MAX (int)(9e8)
+#define FILE_NUM 65539
 
 typedef struct node {
   enum { FILE_NODE, DIR_NODE } type;
@@ -23,8 +27,13 @@ typedef struct fd {
 
 Node root;
 
-char board[MAX]; // TODO: check is ok...
-bool status[MAX];
+char board[MAX] = {0}; //is ok? maybe
+bool status[MAX] = {0};
+
+Fd *handles[FILE_NUM] = {NULL}; // handle, you just go through it until found it able, if too slow then optimize
+
+// whether is permitted to use a new-created function, JUST in this file! (*)
+// file-tree, handle, big file
 
 /**
  * 添加⽂件和⽬录，就是往树⾥添加节点；
@@ -36,8 +45,11 @@ bool status[MAX];
 // To establish a real structure
 // is that difficult? no!
 // first try the all define outsides
+Node *trans(char *path) {
+  return NULL;
+}
 
-void init_ramfs() {
+void init_ramfs() { // do anything you wanna do here
   root.name = "/";
   root.type = DIR_NODE;
   root.next_sib = NULL;
@@ -56,9 +68,23 @@ void init_ramfs() {
  * O_RDWR 02 以可读可写⽅式打开
  */
 
+// concerning the handle : you can create an ARRAY !
+// 同时存在的⽂件与⽬录不会超过 65536 个。
+// 同时活跃着的⽂件描述符 (FD = 114514) 不会超过 4096 个。
 // 打开 ramfs 中的文件。如果成功，返回一个文件描述符（一个非负整数），用于标识这个文件。
 // 如果打开失败，则返回一个 -1。
 int ropen(const char *pathname, int flags) {
+  // 打开 ramfs 中的文件。如果成功，返回一个文件描述符（**一个非负整数**），用于标识这个文件。
+  // 如果打开失败，则返回一个 -1。
+  struct node *open = trans(pathname);
+  if (open == NULL) return RF;
+  else if (open->type == FILE_NODE) {
+
+  } else if (open->type == DIR_NODE) {
+
+  } else {
+    assert(0);
+  }
   // TODO();
 }
 
