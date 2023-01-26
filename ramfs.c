@@ -45,7 +45,7 @@ Fd *handles[FILE_NUM] = {NULL}; // handle, you just go through it until found it
 // To establish a real structure
 // is that difficult? no!
 // first try the all define outsides
-Node *trans(char *path) {
+Node *trans(const char *path) {
   return NULL;
 }
 
