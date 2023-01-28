@@ -7,7 +7,6 @@ ramfs: git
 
 run: ramfs
 	./ramfs
-
 gdb: ramfs
 	gdb ramfs
 
