@@ -3,7 +3,7 @@
 all: ramfs
 
 ramfs: git
-	gcc -g -std=c17 -O2 main.c ramfs.c -o ramfs
+	gcc -g -std=c17 -O2 main.c ramfs.c -o ramfs -mcmodel=large
 
 run: ramfs
 	./ramfs
