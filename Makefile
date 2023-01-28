@@ -6,7 +6,7 @@ ramfs: git
 	gcc -g -std=c17 -O2 main.c ramfs.c -o ramfs
 
 run: ramfs
-	./ramfs
+	./ramfs -mcmodel=large
 
 gdb: ramfs
 	gdb ramfs
