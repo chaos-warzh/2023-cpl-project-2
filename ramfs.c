@@ -3,25 +3,35 @@
 #include <stdbool.h>
 #include <string.h>
 #include <assert.h>
+#include <ctype.h>
 #include <stdio.h>
 
 #define RF (-1)
 #define MAX (int)(9e8)
 #define FILE_NUM 65539
+#define FILE_NAME_LEN 32
+#define PATH_LEN 1024
+#define eq(A, B) (strcmp(A,B) == 0)
+#define NameFindFile NFF
+#define FdFindIndex FFI
+
+#define R (-2)
+#define W (-4)
+#define RW (-8)
 
 typedef struct node {
   enum { FILE_NODE, DIR_NODE } type;
   struct node *dirents; // if it's a dir, there's subentries | Attention: that's a Linked list which means that you should make the ptr pointing at head node
   struct node *next_sib; // everyone need, to be a tree, 2 dimensions
-  void *content; // if it's a file, there's data content
-  int subs; // number of subentries for dir
-  int size; // size of file
+  char *content; // if it's a file, there's data content ; and it's actually a ptr, pt at the board.
+//  int subs; // number of subentries for dir
+//  int size; // size of file
   char *name; // it's short name
 } Node;
 
 typedef struct fd {
-  int offset;
-  int flags;
+  int offset; // for file, offset
+  int flags; // for file, open way
   Node *f;
 } Fd;
 
@@ -30,8 +40,10 @@ Node root;
 char board[MAX] = {0}; //is ok? maybe
 bool status[MAX] = {0};
 
-Fd *handles[FILE_NUM] = {NULL}; // handle, you just go through it until found it able, if too slow then optimize
-
+Fd fds[FILE_NUM]; // handle, you just go through it until found it able, if too slow then optimize
+Node nodes[FILE_NUM]; // the real node, where the real contents lie
+bool fd_status[MAX] = {0};
+bool node_status[MAX] = {false};
 // whether is permitted to use a new-created function, JUST in this file! (*)
 // file-tree, handle, big file
 
@@ -45,18 +57,100 @@ Fd *handles[FILE_NUM] = {NULL}; // handle, you just go through it until found it
 // To establish a real structure
 // is that difficult? no!
 // first try the all define outsides
-Node *trans(const char *path) {
-  return NULL;
+bool CheckName(const char *the_name) {
+  int len = (int)strlen(the_name);// only {cha  1  .}
+  if (len > FILE_NAME_LEN + 1) return false;
+  for (int i = 0; i < len - 1; i++)
+    if (!(isalnum(the_name[i]) || the_name[i] == '.'))
+      return false;
+
+  return true;
+}
+
+Node *NameFindFile (const Node *father, const char *name) {
+  assert(father != NULL);
+
+  Node *to_test = father->dirents;
+  while (to_test != NULL && !eq(to_test->name, name)) {
+    to_test = to_test->next_sib;
+  }
+  return to_test;
+}
+
+int FdFindIndex(Fd *ptr) { // remain this func
+  int i = 0;
+  for (;fd_status[i] != 0; i++);
+
+  assert(i < FILE_NUM);
+  fd_status[i] = true; // make sure not to cover the useful data
+
+  fds[i].f = ptr->f;
+
+  if (ptr->f->type == FILE_NODE) { // NO waiting here, Todo: do what it exactly needs to be, 2 special cases
+    fds[i].flags = ptr->flags;
+    fds[i].offset = ptr->offset;
+  }
+  return i;
+}
+
+int NodeFindIndex() {
+  int i = 0;
+  for (;node_status[i] != 0; i++);
+  node_status[i] = true;
+  return i;
+}
+
+Node *touch(char *path) {
+  Node *father = &root;
+
+  char *s = path;
+  s = strtok(path, "/");
+
+  for (; s != NULL; s = strtok(NULL, "/")) {
+    Node *tmp = NFF(father, s); // in this loop, there must be contents
+    if (tmp == NULL) {
+      if (strtok(NULL, "/") == NULL && CheckName(s)) {
+        int idx = NodeFindIndex();
+        nodes[idx].type = FILE_NODE;
+        nodes[idx].dirents = NULL;
+        nodes[idx].name = s;
+        nodes[idx].content = NULL;
+
+        nodes[idx].next_sib = father->dirents; // Head Insert
+        father->dirents = nodes + idx;
+        return nodes + idx;
+      }
+      return NULL;
+    }
+    father = tmp;
+  }
+
+  return father; // in case there already exists
+}
+
+Node *trans(char *path) { // thinking about it, maybe problem? find the truth! persist! GanBaDie!
+  Node *father = &root;
+
+  char *s = path; // nothing matters
+  s = strtok(path, "/");
+
+  for (; s != NULL; s = strtok(NULL, "/")) {
+    father = NFF(father, s); // in this loop, there must be contents
+    if (father == NULL) return NULL;
+    //printf("%s\n", s);  operate the s
+}
+
+  return father;
 }
 
 void init_ramfs() { // do anything you wanna do here
   root.name = "/";
   root.type = DIR_NODE;
   root.next_sib = NULL;
-  root.content = NULL;
+//  root.content = RF;
   root.dirents = NULL;
-  root.size = RF;
-  root.subs = 0;
+//  root.size = RF;
+//  root.subs = 0;
 }
 
 /**
@@ -74,18 +168,34 @@ void init_ramfs() { // do anything you wanna do here
 // 打开 ramfs 中的文件。如果成功，返回一个文件描述符（一个非负整数），用于标识这个文件。
 // 如果打开失败，则返回一个 -1。
 int ropen(const char *pathname, int flags) {
-  // 打开 ramfs 中的文件。如果成功，返回一个文件描述符（**一个非负整数**），用于标识这个文件。
+  // 打开 ramfs 中already exist的文件。如果成功，返回一个文件描述符（**一个非负整数**），用于标识这个文件。
   // 如果打开失败，则返回一个 -1。
-  struct node *open = trans(pathname);
-  if (open == NULL) return RF;
-  else if (open->type == FILE_NODE) {
+  if (strlen(pathname) > PATH_LEN + 1) return RF;
 
-  } else if (open->type == DIR_NODE) {
-
-  } else {
-    assert(0);
+  struct node *open = trans((char *)pathname);
+  if ((flags & O_CREAT) == 0 && open == NULL) return RF;
+  else {
+    if (flags & O_CREAT) {
+      open = touch((char *)pathname);
+      if (open == NULL) return RF; // need to create a new file, this is a REAL create
+    }
+    Fd fd;
+    fd.f = open;
+    if (open->type == FILE_NODE) {
+      // write sth here, I find that to be pure is tough.
+      fd.flags = flags;
+      // define how to open this file, made, jie xi flags, Fuck
+      // here you need to really think about that how to control the memory
+      // here you need to know how to clear the data, one segment by one, catch head and just cover it with 0, without too many thoughts
+      // if touch the tail of the content, status == 1, board == RF
+      if (flags & O_APPEND) {
+        //
+      } else {
+        fd.offset = 0;
+      }
+    }
+    return FFI(&fd);
   }
-  // TODO();
 }
 
 int rclose(int fd) {
@@ -117,4 +227,3 @@ int rrmdir(const char *pathname) {
 int runlink(const char *pathname) {
   // TODO();
 }
-
