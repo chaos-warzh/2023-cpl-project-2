@@ -7,25 +7,27 @@
 #include <stdio.h>
 
 #define RF (-1)
-#define MAX (int)(9e8)
+//#define MAX (int)(9e8)
 #define FILE_NUM 65539
 #define FILE_NAME_LEN 32
 #define PATH_LEN 1024
 #define eq(A, B) (strcmp(A,B) == 0)
 #define NameFindFile NFF
 #define FdFindIndex FFI
-
-#define R (-2)
-#define W (-4)
-#define RW (-8)
+#define CheckFd(i) (i >= 0 && i < FILE_NUM && fd_status[i])
+#define CheckR(num) (!(num & O_WRONLY))
+#define CheckW(num) (num & O_WRONLY || num & O_RDWR)
+//#define R (-2)
+//#define W (-4)
+//#define RW (-8)
 
 typedef struct node {
   enum { FILE_NODE, DIR_NODE } type;
   struct node *dirents; // if it's a dir, there's subentries | Attention: that's a Linked list which means that you should make the ptr pointing at head node
   struct node *next_sib; // everyone need, to be a tree, 2 dimensions
-  char *content; // if it's a file, there's data content ; and it's actually a ptr, pt at the board.
+  void *content; // if it's a file, there's data content ; and it's actually a ptr, pt at the board.
 //  int subs; // number of subentries for dir
-//  int size; // size of file
+  int size; // size of file, how many bytes in the file
   char *name; // it's short name
 } Node;
 
@@ -37,13 +39,13 @@ typedef struct fd {
 
 Node root;
 
-char board[MAX] = {0}; //is ok? maybe
-bool status[MAX] = {0};
+//char board[MAX] = {0}; //ok? maybe
+//bool status[MAX] = {0};
 
 Fd fds[FILE_NUM]; // handle, you just go through it until found it able, if too slow then optimize
 Node nodes[FILE_NUM]; // the real node, where the real contents lie
-bool fd_status[MAX] = {0};
-bool node_status[MAX] = {false};
+bool fd_status[FILE_NUM] = {0};
+bool node_status[FILE_NUM] = {false};
 // whether is permitted to use a new-created function, JUST in this file! (*)
 // file-tree, handle, big file
 
@@ -58,7 +60,7 @@ bool node_status[MAX] = {false};
 // is that difficult? no!
 // first try the all define outsides
 bool CheckName(const char *the_name) {
-  int len = (int)strlen(the_name);// only {cha  1  .}
+  int len = (int)strlen(the_name);// only {c  1  .}
   if (len > FILE_NAME_LEN + 1) return false;
   for (int i = 0; i < len - 1; i++)
     if (!(isalnum(the_name[i]) || the_name[i] == '.'))
@@ -86,9 +88,12 @@ int FdFindIndex(Fd *ptr) { // remain this func
 
   fds[i].f = ptr->f;
 
-  if (ptr->f->type == FILE_NODE) { // NO waiting here, Todo: do what it exactly needs to be, 2 special cases
+  if (ptr->f->type == FILE_NODE) { // NO waiting here, do what it exactly needs to be, 2 special cases
     fds[i].flags = ptr->flags;
     fds[i].offset = ptr->offset;
+  }
+  if (fds[i].flags & O_TRUNC && CheckW(fds[i].flags)) {
+    sprintf(fds[i].f->content, "%s", "\0"); // maybe problematic, because after contents remain alive
   }
   return i;
 }
@@ -188,8 +193,8 @@ int ropen(const char *pathname, int flags) {
       // here you need to really think about that how to control the memory
       // here you need to know how to clear the data, one segment by one, catch head and just cover it with 0, without too many thoughts
       // if touch the tail of the content, status == 1, board == RF
-      if (flags & O_APPEND) {
-        //
+      if ((flags & O_APPEND) && (open->content)) {
+        fd.offset = fd.f->size; // pointing at the end of the file, will read nothing
       } else {
         fd.offset = 0;
       }
@@ -199,12 +204,32 @@ int ropen(const char *pathname, int flags) {
 }
 
 int rclose(int fd) {
-  // TODO();
+  if (!CheckFd(fd)) return RF;
+  else {
+    fd_status[fd] = false; // not to clear the content
+    return 0;
+  }
 }
 
-// 向 fd 中的偏移量位置写入以 buf 开始的至多 count 字节，覆盖文件原有的数据(如果 count 超过 buf 的大小，仍继续写入)，将 fd 的偏移量后移 count，并返回实际成功写入的字节数。如果写入的位置超过了原来的文件末尾，则自动为该文件扩容.
+// 向 fd 中的*偏移量位置*写入以 buf 开始的至多 count 字节，覆盖文件原有的数据(如果 count 超过 buf 的大小，仍继续写入)，
+// 将 fd 的偏移量后移 count，并返回实际成功写入的字节数(count)。
+// 如果写入的位置超过了原来的文件末尾，则自动为该文件扩容.
 // 如果 fd 不是一个可写的文件描述符，或 fd 指向的是一个目录，则返回 -1
 ssize_t rwrite(int fd, const void *buf, size_t count) {
+  if (!CheckFd(fd) || fds[fd].f->type == DIR_NODE || !CheckW(fds[fd].flags)) return RF;
+
+  if (fds[fd].f->content == NULL) { // which means it's a null file
+//    size_t size = count; // ?
+    void *ctt = malloc(count);
+    fds[fd].f->content = ctt;
+    memcpy(ctt, buf, count); // actually if is a num array, and buf < count, then transboundary! HOPE NOT HAPPEN
+  } else if () {
+
+  }
+  //todo : size may enhance
+
+  fds[fd].offset += (int)count; // offset moves
+  return (ssize_t)count; // always so
   // TODO();
 }
 
