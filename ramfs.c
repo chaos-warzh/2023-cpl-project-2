@@ -128,7 +128,7 @@ Node *touch(char *path) {
     father = tmp;
   }
 
-  return father; // in case there already exists
+  return NULL; // in case there already exists, return NULL, must restrict new it
 }
 
 Node *trans(char *path) { // thinking about it, maybe problem? find the truth! persist! GanBaDie!
