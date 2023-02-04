@@ -17,9 +17,6 @@
 #define CheckFd(i) (i >= 0 && i < FILE_NUM && fd_status[i])
 #define CheckR(num) (!(num & O_WRONLY))
 #define CheckW(num) (num & O_WRONLY || num & O_RDWR)
-//#define R (-2)
-//#define W (-4)
-//#define RW (-8)
 
 typedef struct node {
   enum { FILE_NODE, DIR_NODE } type;
@@ -27,7 +24,7 @@ typedef struct node {
   struct node *next_sib; // everyone need, to be a tree, 2 dimensions
   void *content; // if it's a file, there's data content ; and it's actually a ptr, pt at the board.
 //  int subs; // number of subentries for dir
-  int size; // size of file, how many bytes in the file
+  size_t size; // size of file, how many bytes in the file
   char *name; // it's short name
 } Node;
 
@@ -120,6 +117,7 @@ Node *touch(char *path) {
         nodes[idx].dirents = NULL;
         nodes[idx].name = s;
         nodes[idx].content = NULL;
+        nodes[idx].size = 0;//
 
         nodes[idx].next_sib = father->dirents; // Head Insert
         father->dirents = nodes + idx;
@@ -194,7 +192,7 @@ int ropen(const char *pathname, int flags) {
       // here you need to know how to clear the data, one segment by one, catch head and just cover it with 0, without too many thoughts
       // if touch the tail of the content, status == 1, board == RF
       if ((flags & O_APPEND) && (open->content)) {
-        fd.offset = fd.f->size; // pointing at the end of the file, will read nothing
+        fd.offset = (int)fd.f->size; // pointing at the end of the file(EOF), will read nothing
       } else {
         fd.offset = 0;
       }
@@ -216,28 +214,59 @@ int rclose(int fd) {
 // 如果写入的位置超过了原来的文件末尾，则自动为该文件扩容.
 // 如果 fd 不是一个可写的文件描述符，或 fd 指向的是一个目录，则返回 -1
 ssize_t rwrite(int fd, const void *buf, size_t count) {
-  if (!CheckFd(fd) || fds[fd].f->type == DIR_NODE || !CheckW(fds[fd].flags)) return RF;
+  if (!CheckFd(fd) || fds[fd].f->type == DIR_NODE || !CheckW(fds[fd].flags)) return RF; // exist, is file, writable
+  assert(fds[fd].offset >= 0);
 
   if (fds[fd].f->content == NULL) { // which means it's a null file
-//    size_t size = count; // ?
+    assert(fds[fd].offset == 0); // the offset normal
     void *ctt = malloc(count);
-    fds[fd].f->content = ctt;
-    memcpy(ctt, buf, count); // actually if is a num array, and buf < count, then transboundary! HOPE NOT HAPPEN
-  } else if () {
+    fds[fd].f->size = (int)count;
 
+    memcpy(ctt, buf, count); // ***** actually if is a num array, and buf < count, then transboundary! HOPE NOT HAPPEN
+    fds[fd].f->content = ctt;
+  } else {
+    int ofst = fds[fd].offset; // maybe enhance, maybe not
+    size_t sze = fds[fd].f->size;
+    if (ofst + count <= sze) { // no need to expand
+      memcpy((fds[fd].f->content + ofst), buf, count);
+    } else {
+      void *ctt = fds[fd].f->content;
+      ctt = realloc(ctt, ofst + count);
+      fds[fd].f->size = (int)(ofst + count);
+
+      memcpy(ctt + ofst, buf, count);
+      fds[fd].f->content = ctt;
+    }
   }
-  //todo : size may enhance
 
   fds[fd].offset += (int)count; // offset moves
   return (ssize_t)count; // always so
-  // TODO();
 }
 
 ssize_t rread(int fd, void *buf, size_t count) {
-  // TODO();
+  if (!CheckFd(fd) || fds[fd].f->type == DIR_NODE || !CheckR(fds[fd].flags)) return RF; // exist(once opend), is file, readable
+  assert(fds[fd].offset >= 0); // normal offset
+
+  int ofst = fds[fd].offset; // maybe enhance, maybe not
+  size_t sze = fds[fd].f->size;
+  if (ofst >= sze) return 0;
+  else {
+    size_t readable_bytes = sze - ofst;
+    size_t true_read = readable_bytes > count ? count : readable_bytes;
+
+    memcpy(buf, fds[fd].f->content + ofst, true_read);
+    fds[fd].offset += (int)true_read;
+    return (ssize_t)true_read;
+  }
+
 }
 
+/** SEEK_SET 0   将文件描述符的偏移量设置到 offset 指向的位置
+*   SEEK_CUR 1   将文件描述符的偏移量设置到 当前位置 + offset 字节的位置
+*   SEEK_END 2   将文件描述符的偏移量设置到 文件末尾 + offset 字节的位置
+**/
 off_t rseek(int fd, off_t offset, int whence) {
+
   // TODO();
 }
 
