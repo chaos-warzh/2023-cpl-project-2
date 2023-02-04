@@ -293,5 +293,5 @@ int runlink(const char *pathname) {
   Node *file = trans((char *)pathname);
   if (file == NULL || file->type != FILE_NODE) return RF;// not exist, not a dir
   // make his father and sibs give it up // TODO();
-
+  return 0;
 }
