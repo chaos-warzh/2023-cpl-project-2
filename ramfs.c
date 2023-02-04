@@ -153,7 +153,6 @@ void init_ramfs() { // do anything you wanna do here
 //  root.content = RF;
   root.dirents = NULL;
 //  root.size = RF;
-//  root.subs = 0;
 }
 
 /**
@@ -173,7 +172,7 @@ void init_ramfs() { // do anything you wanna do here
 int ropen(const char *pathname, int flags) {
   // 打开 ramfs 中already exist的文件。如果成功，返回一个文件描述符（**一个非负整数**），用于标识这个文件。
   // 如果打开失败，则返回一个 -1。
-  if (strlen(pathname) > PATH_LEN + 1) return RF;
+  if (strlen(pathname) > PATH_LEN) return RF;
 
   struct node *open = trans((char *)pathname);
   if ((flags & O_CREAT) == 0 && open == NULL) return RF;
@@ -217,34 +216,26 @@ ssize_t rwrite(int fd, const void *buf, size_t count) {
   if (!CheckFd(fd) || fds[fd].f->type == DIR_NODE || !CheckW(fds[fd].flags)) return RF; // exist, is file, writable
   assert(fds[fd].offset >= 0);
 
-  if (fds[fd].f->content == NULL) { // which means it's a null file
-    assert(fds[fd].offset == 0); // the offset normal
-    void *ctt = malloc(count);
-    fds[fd].f->size = (int)count;
-
-    memcpy(ctt, buf, count); // ***** actually if is a num array, and buf < count, then transboundary! HOPE NOT HAPPEN
-    fds[fd].f->content = ctt;
+  int ofst = fds[fd].offset; // maybe enhance, maybe not
+  size_t sze = fds[fd].f->size;
+  if (ofst + count <= sze) { // no need to expand
+    memcpy((fds[fd].f->content + ofst), buf, count);
   } else {
-    int ofst = fds[fd].offset; // maybe enhance, maybe not
-    size_t sze = fds[fd].f->size;
-    if (ofst + count <= sze) { // no need to expand
-      memcpy((fds[fd].f->content + ofst), buf, count);
-    } else {
-      void *ctt = fds[fd].f->content;
-      ctt = realloc(ctt, ofst + count);
-      fds[fd].f->size = (int)(ofst + count);
-
-      memcpy(ctt + ofst, buf, count);
-      fds[fd].f->content = ctt;
-    }
+    void *ctt = fds[fd].f->content;
+    ctt = realloc(ctt, ofst + count);
+    fds[fd].f->size = (int)(ofst + count);
+    if (ofst > sze) memset(ctt + sze, 0, ofst - sze); // possess the middle to make them "\0" on your hands???
+    memcpy(ctt + ofst, buf, count);
+    fds[fd].f->content = ctt;
   }
 
   fds[fd].offset += (int)count; // offset moves
   return (ssize_t)count; // always so
 }
 
+
 ssize_t rread(int fd, void *buf, size_t count) {
-  if (!CheckFd(fd) || fds[fd].f->type == DIR_NODE || !CheckR(fds[fd].flags)) return RF; // exist(once opend), is file, readable
+  if (!CheckFd(fd) || fds[fd].f->type == DIR_NODE || !CheckR(fds[fd].flags)) return RF; // exist(once opened), is file, readable
   assert(fds[fd].offset >= 0); // normal offset
 
   int ofst = fds[fd].offset; // maybe enhance, maybe not
@@ -266,18 +257,41 @@ ssize_t rread(int fd, void *buf, size_t count) {
 *   SEEK_END 2   将文件描述符的偏移量设置到 文件末尾 + offset 字节的位置
 **/
 off_t rseek(int fd, off_t offset, int whence) {
+  if (!CheckFd(fd) || fds[fd].f->type == DIR_NODE) return RF; // exist(once opened), is file
+  if (whence != SEEK_SET && whence != SEEK_CUR && whence != SEEK_END) return RF; // I add it
 
-  // TODO();
+  int ofst = fds[fd].offset;
+  int final_set = 0;
+
+  if (whence == SEEK_CUR) final_set = ofst;
+  if (whence == SEEK_END) final_set = (int)fds[fd].f->size;
+  final_set += (int)offset;
+  if (final_set < 0) return RF;
+  else {
+    fds[fd].offset = final_set;
+    return final_set;
+  }
 }
 
-int rmkdir(const char *pathname) {
-  // TODO();
+int rmkdir(const char *pathname) { // make it simple, for large amount of use
+  if (strlen(pathname) > PATH_LEN) return RF;
+
+  Node *dir_node = touch((char *)pathname);
+  if (dir_node == NULL) return RF;
+  dir_node->type = DIR_NODE;
+  return 0;
 }
 
 int rrmdir(const char *pathname) {
-  // TODO();
+  Node *dir = trans((char *)pathname);
+  if (dir == NULL || dir->type != DIR_NODE || dir->dirents != NULL) return RF; // not exist, not empty, not a dir
+//  how to remove it ? first you must find his father, sibs, then kill it from nodes[]// TODO();
+  return 0;
 }
 
 int runlink(const char *pathname) {
-  // TODO();
+  Node *file = trans((char *)pathname);
+  if (file == NULL || file->type != FILE_NODE) return RF;// not exist, not a dir
+  // make his father and sibs give it up // TODO();
+
 }
