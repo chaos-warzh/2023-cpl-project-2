@@ -105,10 +105,11 @@ int NodeFindIndex() {
 Node *touch(char *path) {
   Node *father = &root;
 
-  printf("%s\n", path);// todo
-  char *s = path;
-  s = strtok(path, "/"); // todo : BUG
-  printf("%s\n", s);// todo
+  char pth[PATH_LEN + 5];
+  sprintf(pth, "%s", path);
+
+  char *s = pth;
+  s = strtok(pth, "/");
 
   for (; s != NULL; s = strtok(NULL, "/")) {
     Node *tmp = NFF(father, s); // in this loop, there must be contents
@@ -136,8 +137,11 @@ Node *touch(char *path) {
 Node *trans(char *path) { // thinking about it, maybe problem? find the truth! persist! GanBaDie!
   Node *father = &root;
 
-  char *s = path; // nothing matters
-  s = strtok(path, "/");
+  char pth[PATH_LEN + 5];
+  sprintf(pth, "%s", path);
+
+  char *s = pth; // nothing matters
+  s = strtok(pth, "/");
 
   for (; s != NULL; s = strtok(NULL, "/")) {
     father = NFF(father, s); // in this loop, there must be contents
