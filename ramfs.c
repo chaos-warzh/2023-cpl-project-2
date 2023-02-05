@@ -106,8 +106,8 @@ Node *touch(char *path) {
   Node *father = &root;
 
   char *s = path;
-  s = strtok(path, "/");
-  puts("fuck");// todo
+  s = strtok(path, "/"); // todo : BUG
+  printf("%s\n", s);// todo
 
   for (; s != NULL; s = strtok(NULL, "/")) {
     Node *tmp = NFF(father, s); // in this loop, there must be contents
@@ -128,7 +128,6 @@ Node *touch(char *path) {
     }
     father = tmp;
   }
-  puts("U");// todo
 
   return NULL; // in case there already exists, return NULL, must restrict new it
 }
