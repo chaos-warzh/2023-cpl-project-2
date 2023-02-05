@@ -36,9 +36,6 @@ typedef struct fd {
 
 Node root;
 
-//char board[MAX] = {0}; //ok? maybe
-//bool status[MAX] = {0};
-
 Fd fds[FILE_NUM]; // handle, you just go through it until found it able, if too slow then optimize
 Node nodes[FILE_NUM]; // the real node, where the real contents lie
 bool fd_status[FILE_NUM] = {0};
@@ -290,17 +287,23 @@ int rmkdir(const char *pathname) { // make it simple, for large amount of use
   dir_node->type = DIR_NODE;
   return 0;
 }
-
+/**
+ * what should you do here
+ * 1: free (name)
+ * 2: get rid of the nodes[]
+ * 3: make his sibs / father forget him
+ * from low to high.
+ */
 int rrmdir(const char *pathname) {
   Node *dir = trans((char *)pathname);
   if (dir == NULL || dir->type != DIR_NODE || dir->dirents != NULL) return RF; // not exist, not empty, not a dir
-//  how to remove it ? first you must find his father, sibs, then kill it from nodes[]// TODO();
+  Rm(pathname);//  how to remove it ? first you must find his father, sibs, then kill it from nodes[]// TODO();
   return 0;
 }
 
 int runlink(const char *pathname) {
   Node *file = trans((char *)pathname);
   if (file == NULL || file->type != FILE_NODE) return RF;// not exist, not a dir
-  // make his father and sibs give it up // TODO();
+  Rm(pathname);// make his father and sibs give it up // TODO();
   return 0;
 }
