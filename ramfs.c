@@ -113,13 +113,15 @@ Node *touch(char *path) {
 
   for (; s != NULL; s = strtok(NULL, "/")) {
     Node *tmp = NFF(father, s); // in this loop, there must be contents
-    printf("%s\n", s);//
+
     if (tmp == NULL) { // todo: why, why not reject
       if (strtok(NULL, "/") == NULL && CheckName(s)) {
         int idx = NodeFindIndex();
         nodes[idx].type = FILE_NODE;
         nodes[idx].dirents = NULL;
-        nodes[idx].name = s;
+        char *new_name = malloc(sizeof(s)); // to free
+        sprintf(new_name, "%s", s);
+        nodes[idx].name = new_name;
         nodes[idx].content = NULL;
         nodes[idx].size = 0;//
 
