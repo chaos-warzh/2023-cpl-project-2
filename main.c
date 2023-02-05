@@ -23,5 +23,6 @@ int main() {
   assert(memcmp(buf, "\0\0\0world", 8) == 0);
   assert(rclose(fd) == 0);
   assert(rclose(fd + 1) == -1);
+  puts("WIN");
   return 0;
 }
