@@ -6,7 +6,7 @@
 int main() {
   init_ramfs();
   assert(rmkdir("/dir") == 0);
-  printf("\n%d\n\n\n", rmkdir("//dir")); // TODO:bug
+//  printf("\n%d\n\n\n", rmkdir("//dir")); // TODO:bug ,0
   assert(rmkdir("//dir") == -1);
   assert(rmkdir("/a/b") == -1);
   int fd;
