@@ -1,12 +1,14 @@
 #include "ramfs.h"
 #include <assert.h>
 #include <string.h>
+#include <stdio.h>
 
 int main() {
   init_ramfs();
   assert(rmkdir("/dir") == 0);
+  printf("%d", rmkdir("//dir")); // TODO:bug
   assert(rmkdir("//dir") == -1);
-  assert(rmkdir("/a/b") == -1); // TODO:bug
+  assert(rmkdir("/a/b") == -1);
   int fd;
 //  assert((fd = ropen("//dir///////1.txt", O_CREAT | O_RDWR)) >= 0);
 //  assert(rwrite(fd, "hello", 5) == 5);
