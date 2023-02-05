@@ -105,6 +105,7 @@ int NodeFindIndex() {
 Node *touch(char *path) {
   Node *father = &root;
 
+  printf("%s\n", path);// todo
   char *s = path;
   s = strtok(path, "/"); // todo : BUG
   printf("%s\n", s);// todo
