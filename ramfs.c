@@ -114,7 +114,7 @@ Node *touch(char *path) {
   for (; s != NULL; s = strtok(NULL, "/")) {
     Node *tmp = NFF(father, s); // in this loop, there must be contents
 
-    if (tmp == NULL) { // todo: why, why not reject
+    if (tmp == NULL) {
       if (strtok(NULL, "/") == NULL && CheckName(s)) {
         int idx = NodeFindIndex();
         nodes[idx].type = FILE_NODE;
