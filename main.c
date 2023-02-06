@@ -320,7 +320,7 @@ int main() {
     else {
       puts("false");
       printf("\t\tin function %s, at line %d\n", "_function_name_", 318);
-      printf("%d", f);
+      printf("\n%d\n", f);
       exit(0);
     }
   }
