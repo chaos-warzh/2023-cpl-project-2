@@ -4,6 +4,7 @@
 #include <stdio.h>
 
 int main() {
+
   init_ramfs();
   assert(rmkdir("/dir") == 0);
   assert(rmkdir("//dir") == -1);
@@ -14,6 +15,7 @@ int main() {
   assert(rseek(fd, 0, SEEK_CUR) == 5);
   assert(rseek(fd, 0, SEEK_SET) == 0);
   char buf[8];
+  rread(-100000000, buf, 10);
   assert(rread(fd, buf, 7) == 5);
   assert(memcmp(buf, "hello", 5) == 0);
   assert(rseek(fd, 3, SEEK_END) == 8);
