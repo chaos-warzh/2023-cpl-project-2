@@ -103,6 +103,7 @@ int NodeFindIndex() {
 }
 
 Node *touch(char *path) {
+  if (path[0] != '/') return NULL;
   Node *father = &root;
 
   char pth[PATH_LEN + 5];
@@ -139,6 +140,7 @@ Node *touch(char *path) {
 }
 
 Node *trans(char *path) { // thinking about it, maybe problem? find the truth! persist! GanBaDie!
+  if (path[0] != '/') return NULL;
   Node *father = &root;
 
   char pth[PATH_LEN + 5];
