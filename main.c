@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#define Log() printf("in function %s, at line %d\n", __FUNCTION__, __LINE__)
 #ifdef LOCAL
 #include <assert.h>
 #else
@@ -12,6 +13,7 @@
       ;                                                                        \
     else {                                                                     \
       puts("false");                                                           \
+      Log();                                                                   \
       exit(EXIT_SUCCESS);                                                      \
     }                                                                          \
   } while (0)
