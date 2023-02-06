@@ -69,5 +69,6 @@ int genfd(int *fds, int n) {
     assert(rclose(fd[1]) == 0);
     assert(rclose(fd[2]) == 0);
     assert(rclose(fd[3]) == 0);
+    puts("WIN");
     return 0;
   }
