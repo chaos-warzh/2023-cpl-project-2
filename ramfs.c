@@ -180,7 +180,7 @@ int ropen(const char *pathname, int flags) {
   struct node *open = trans((char *)pathname);
   if (!(flags & O_CREAT) && open == NULL) return RF;
   else {
-    if (flags & O_CREAT) {
+    if (flags & O_CREAT && open == NULL) {// != null, and create
       open = touch((char *)pathname);
       if (open == NULL) return RF; // need to create a new file, this is a REAL create
     }
