@@ -315,7 +315,17 @@ int main() {
   test(rrmdir, -1, "/never");
 
   /* can't have subdir in file */
-//  succopen(f, "/never", O_CREAT);
+  do {
+    if ((f = ropen("/never", 0100)) >= 0);
+    else {
+      puts("false");
+      printf("\t\tin function %s, at line %d\n", "_function_name_", 318);
+      exit(0);
+    }
+  }
+  while (0);
+
+  succopen(f, "/never", O_CREAT);
   test(rclose, 0, f);
   test(rmkdir, -1, "/never/gonna");
   test(rmkdir, -1, "/never/gonna/give");
