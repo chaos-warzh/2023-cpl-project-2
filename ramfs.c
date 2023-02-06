@@ -119,8 +119,8 @@ Node *touch(char *path) {
         int idx = NodeFindIndex();
         nodes[idx].type = FILE_NODE;
         nodes[idx].dirents = NULL;
-        char *new_name = malloc(strlen(s) + 5); // to free todo: sigvf
-        printf("%lu\n\n", strlen(s));
+        char *new_name = malloc(strlen(s) + 5); // to free
+
         sprintf(new_name, "%s", s);
         nodes[idx].name = new_name;
         nodes[idx].content = NULL;
