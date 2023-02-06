@@ -122,7 +122,6 @@ int main() {
 // todo: worst-hit area
 #ifndef REF
   /* more than long */
-  printf("\t%lu\n\n", strlen("000000000000000000000000000000001"));
   test(rmkdir, -1, "/000000000000000000000000000000001"); // created?
   /* illegal */
   test(rmkdir, -1, "/000000000=0000000000000000000001");
