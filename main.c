@@ -222,5 +222,6 @@ int main() {
     assert(memcmp(buf, ref, 1 MB) == 0);
   }
 
-  puts("true");
+  puts("\ntrue");
+  return 0;
 }
