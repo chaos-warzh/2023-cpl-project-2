@@ -174,7 +174,7 @@ int ropen(const char *pathname, int flags) {
   if (strlen(pathname) > PATH_LEN) return RF;
 
   struct node *open = trans((char *)pathname);
-  if ((flags & O_CREAT || CheckW(flags)) == 0 && open == NULL) return RF;
+  if (!(flags & O_CREAT || CheckW(flags)) && open == NULL) return RF;
   else {
     if (flags & O_CREAT || CheckW(flags)) { //todo: suppose not in , but in
       open = touch((char *)pathname);
