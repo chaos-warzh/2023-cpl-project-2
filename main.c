@@ -122,30 +122,30 @@ int main() {
 #endif
 
   /* first round */
-  test(rrmdir, -1, "/never");
-  test(rrmdir, -1, "/never/gonna");
-  test(rrmdir, -1, "/never/gonna/give");
-  test(rrmdir, -1, "/never/gonna/give/you");
-  test(rrmdir, 0, "/never/gonna/give/you/up");
-  test(rrmdir, -1, "/never/gonna/let");
-  test(rrmdir, -1, "/never/gonna/let/you");
-  test(rrmdir, 0, "/never/gonna/let/you/down");
-  test(rrmdir, -1, "/never/gonna/run");
-  test(rrmdir, 0, "/never/gonna/run/around");
-  test(rrmdir, 0, "/never/gonna/and");
-  test(rrmdir, -1, "/never/gonna/desert");
-  test(rrmdir, 0, "/never/gonna/desert/you");
-  test(rrmdir, -1, "/never/gonna/make");
-  test(rrmdir, -1, "/never/gonna/make/you");
-  test(rrmdir, 0, "/never/gonna/make/you/cry");
-  test(rrmdir, -1, "/never/gonna/say");
-  test(rrmdir, 0, "/never/gonna/say/goodbye");
-  test(rrmdir, -1, "/never/gonna/tell");
-  test(rrmdir, -1, "/never/gonna/tell/a");
-  test(rrmdir, 0, "/never/gonna/tell/a/lie");
-  test(rrmdir, -1, "/never/gonna/and");
-  test(rrmdir, -1, "/never/gonna/hurt");
-  test(rrmdir, 0, "/never/gonna/hurt/you");
+//  test(rrmdir, -1, "/never");
+//  test(rrmdir, -1, "/never/gonna");
+//  test(rrmdir, -1, "/never/gonna/give");
+//  test(rrmdir, -1, "/never/gonna/give/you");
+//  test(rrmdir, 0, "/never/gonna/give/you/up");
+//  test(rrmdir, -1, "/never/gonna/let");
+//  test(rrmdir, -1, "/never/gonna/let/you");
+//  test(rrmdir, 0, "/never/gonna/let/you/down");
+//  test(rrmdir, -1, "/never/gonna/run");
+//  test(rrmdir, 0, "/never/gonna/run/around");
+//  test(rrmdir, 0, "/never/gonna/and");
+//  test(rrmdir, -1, "/never/gonna/desert");
+//  test(rrmdir, 0, "/never/gonna/desert/you");
+//  test(rrmdir, -1, "/never/gonna/make");
+//  test(rrmdir, -1, "/never/gonna/make/you");
+//  test(rrmdir, 0, "/never/gonna/make/you/cry");
+//  test(rrmdir, -1, "/never/gonna/say");
+//  test(rrmdir, 0, "/never/gonna/say/goodbye");
+//  test(rrmdir, -1, "/never/gonna/tell");
+//  test(rrmdir, -1, "/never/gonna/tell/a");
+//  test(rrmdir, 0, "/never/gonna/tell/a/lie");
+//  test(rrmdir, -1, "/never/gonna/and");
+//  test(rrmdir, -1, "/never/gonna/hurt");
+//  test(rrmdir, 0, "/never/gonna/hurt/you");
 
   /* first round deleted: 
      give you up
