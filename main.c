@@ -24,7 +24,7 @@
 #ifdef LOCAL
 #define Log() printf("in function %s, at line %d\n", __FUNCTION__, __LINE__)
 #else
-#define Log()//  printf("in function %s, at line %d\n", __FUNCTION__, __LINE__) actually null
+#define Log() printf("in function %s, at line %d\n", __FUNCTION__, __LINE__)// actually null
 #endif
 
 #define test(func, expect, ...) assert(func(__VA_ARGS__) == expect)
@@ -122,6 +122,7 @@ int main() {
 
 #ifndef REF
   /* more than long */
+  printf("%d\n\n", rmkdir("/000000000000000000000000000000001"));
   test(rmkdir, -1, "/000000000000000000000000000000001");
   /* illegal */
   test(rmkdir, -1, "/000000000=0000000000000000000001");
