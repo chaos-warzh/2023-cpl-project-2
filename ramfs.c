@@ -87,7 +87,10 @@ int FdFindIndex(Fd *ptr) { // remain this func
     fds[i].offset = ptr->offset;
   }
   if (fds[i].flags & O_TRUNC && CheckW(fds[i].flags)) {
-    sprintf(fds[i].f->content, "%s", "\0"); // maybe problematic, because after contents remain alive
+    free(fds[i].f->content);
+    fds[i].f->content = NULL;
+    fds[i].f->size = 0;
+    // maybe problematic, because after contents remain alive
   }
   return i;
 }
@@ -171,21 +174,18 @@ int ropen(const char *pathname, int flags) {
   if (strlen(pathname) > PATH_LEN) return RF;
 
   struct node *open = trans((char *)pathname);
-  if ((flags & O_CREAT) == 0 && open == NULL) return RF;
+  if ((flags & O_CREAT || CheckW(flags)) == 0 && open == NULL) return RF;
   else {
-    if (flags & O_CREAT) {
+    if (flags & O_CREAT || CheckW(flags)) { //todo: suppose not in , but in
       open = touch((char *)pathname);
       if (open == NULL) return RF; // need to create a new file, this is a REAL create
     }
     Fd fd;
     fd.f = open;
     if (open->type == FILE_NODE) {
-      // write sth here, I find that to be pure is tough.
       fd.flags = flags;
       // define how to open this file, made, jie xi flags, Fuck
       // here you need to really think about that how to control the memory
-      // here you need to know how to clear the data, one segment by one, catch head and just cover it with 0, without too many thoughts
-      // if touch the tail of the content, status == 1, board == RF
       if ((flags & O_APPEND) && (open->content)) {
         fd.offset = (int)fd.f->size; // pointing at the end of the file(EOF), will read nothing
       } else {
