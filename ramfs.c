@@ -116,8 +116,8 @@ Node *touch(char *path) {
     Node *tmp = NFF(father, s); // in this loop, there must be contents
 
     if (tmp == NULL) {
-      if (strtok(NULL, "/") == NULL && CheckName(s)) {
-        if (father->type != DIR_NODE) return NULL;
+      if (strtok(NULL, "/") == NULL && CheckName(s) && father->type == DIR_NODE) {
+
         int idx = NodeFindIndex();
         nodes[idx].type = FILE_NODE;
         nodes[idx].dirents = NULL;
