@@ -323,5 +323,7 @@ int main() {
   test(rrmdir, -1, "/never/gonna/give");
   test(rrmdir, -1, "/never/gonna/give/you");
 
-  puts("true");
+  puts("true"); puts("true");
+  puts("true"); puts("true");
+  puts("WIN");
 }
