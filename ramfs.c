@@ -147,7 +147,7 @@ Node *trans(char *path) { // thinking about it, maybe problem? find the truth! p
     father = NFF(father, s); // in this loop, there must be contents
     if (father == NULL) return NULL;
     //printf("%s\n", s);  operate the s
-}
+  }
 
   return father;
 }
@@ -160,15 +160,6 @@ void init_ramfs() { // do anything you wanna do here
   root.dirents = NULL;
 //  root.size = RF;
 }
-
-/**
- * O_APPEND 02000 以追加模式打开⽂件。即打开后，⽂件描述符的偏移量指向⽂件的末尾。若⽆此标志，则指向⽂件的开头
- * O_CREAT 0100 如果 pathname 不存在，就创建这个⽂件，但如果这个⽬录中的⽗⽬录不存在，则创建失败；如果存在则正常打开
- * O_TRUNC 01000 如果 pathname 是⼀个存在的⽂件，并且同时以可写⽅式 (O_WRONLY/O_RDWR) 打开了⽂件，则⽂件内容被清空
- * O_RDONLY 00 以只读⽅式打开
- * O_WRONLY 01 以只写⽅式打开
- * O_RDWR 02 以可读可写⽅式打开
- */
 
 // concerning the handle : you can create an ARRAY !
 // 同时存在的⽂件与⽬录不会超过 65536 个。
