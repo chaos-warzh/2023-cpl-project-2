@@ -60,7 +60,7 @@ int main() {
 
   /* a nice tree, haha */
   test(rmkdir, 0, "/never");
-
+  int f;
 
   /* fifth round */
   test(rrmdir, 0, "/never");
