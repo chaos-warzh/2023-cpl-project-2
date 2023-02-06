@@ -55,8 +55,8 @@ bool node_status[FILE_NUM] = {false};
 // first try the all define outsides
 bool CheckName(const char *the_name) {
   int len = (int)strlen(the_name);// only {c  1  .}
-  if (len > FILE_NAME_LEN) return false;
-  for (int i = 0; i < len - 1; i++)
+  if (strlen(the_name) > FILE_NAME_LEN) return false;
+  for (int i = 0; i < len; i++)
     if (!(isalnum(the_name[i]) || the_name[i] == '.'))
       return false;
 
