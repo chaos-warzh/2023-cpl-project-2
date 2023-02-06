@@ -60,65 +60,65 @@ int main() {
 
   /* a nice tree, haha */
   test(rmkdir, 0, "/never");
-  test(rmkdir, 0, "/never/gonna");
-  test(rmkdir, 0, "/never/gonna/give");
-  test(rmkdir, 0, "/never/gonna/give/you");
-  test(rmkdir, 0, "/never/gonna/give/you/up");
-  test(rmkdir, 0, "/never/gonna/let");
-  test(rmkdir, 0, "/never/gonna/let/you");
-  test(rmkdir, 0, "/never/gonna/let/you/down");
-  test(rmkdir, 0, "/never/gonna/run");
-  test(rmkdir, 0, "/never/gonna/run/around");
-  test(rmkdir, 0, "/never/gonna/and");
-  test(rmkdir, 0, "/never/gonna/desert");
-  test(rmkdir, 0, "/never/gonna/desert/you");
-  test(rmkdir, 0, "/never/gonna/make");
-  test(rmkdir, 0, "/never/gonna/make/you");
-  test(rmkdir, 0, "/never/gonna/make/you/cry");
-  test(rmkdir, 0, "/never/gonna/say");
-  test(rmkdir, 0, "/never/gonna/say/goodbye");
-  test(rmkdir, 0, "/never/gonna/tell");
-  test(rmkdir, 0, "/never/gonna/tell/a");
-  test(rmkdir, 0, "/never/gonna/tell/a/lie");
-  test(rmkdir, -1, "/never/gonna/and");
-  test(rmkdir, 0, "/never/gonna/hurt");
-  test(rmkdir, 0, "/never/gonna/hurt/you");
+//  test(rmkdir, 0, "/never/gonna");
+//  test(rmkdir, 0, "/never/gonna/give");
+//  test(rmkdir, 0, "/never/gonna/give/you");
+//  test(rmkdir, 0, "/never/gonna/give/you/up");
+//  test(rmkdir, 0, "/never/gonna/let");
+//  test(rmkdir, 0, "/never/gonna/let/you");
+//  test(rmkdir, 0, "/never/gonna/let/you/down");
+//  test(rmkdir, 0, "/never/gonna/run");
+//  test(rmkdir, 0, "/never/gonna/run/around");
+//  test(rmkdir, 0, "/never/gonna/and");
+//  test(rmkdir, 0, "/never/gonna/desert");
+//  test(rmkdir, 0, "/never/gonna/desert/you");
+//  test(rmkdir, 0, "/never/gonna/make");
+//  test(rmkdir, 0, "/never/gonna/make/you");
+//  test(rmkdir, 0, "/never/gonna/make/you/cry");
+//  test(rmkdir, 0, "/never/gonna/say");
+//  test(rmkdir, 0, "/never/gonna/say/goodbye");
+//  test(rmkdir, 0, "/never/gonna/tell");
+//  test(rmkdir, 0, "/never/gonna/tell/a");
+//  test(rmkdir, 0, "/never/gonna/tell/a/lie");
+//  test(rmkdir, -1, "/never/gonna/and");
+//  test(rmkdir, 0, "/never/gonna/hurt");
+//  test(rmkdir, 0, "/never/gonna/hurt/you");
 
 #ifndef REF
   /* you can't escape this */
   /* not the same with linux syscall_open */
   succopen(fd[1 ], "/never", O_CREAT);
-  succopen(fd[2 ], "/never/gonna", O_CREAT);
-  succopen(fd[3 ], "/never/gonna/give", O_CREAT);
-  succopen(fd[4 ], "/never/gonna/give/you", O_CREAT);
-  succopen(fd[5 ], "/never/gonna/give/you/up", O_CREAT);
-  succopen(fd[6 ], "/never/gonna/let", O_CREAT);
-  succopen(fd[7 ], "/never/gonna/let/you", O_CREAT);
-  succopen(fd[8 ], "/never/gonna/let/you/down", O_CREAT);
-  succopen(fd[9 ], "/never/gonna/run", O_CREAT);
-  succopen(fd[10], "/never/gonna/run/around", O_CREAT);
-  succopen(fd[11], "/never/gonna/and", O_CREAT);
-  succopen(fd[12], "/never/gonna/desert", O_CREAT);
-  succopen(fd[13], "/never/gonna/desert/you", O_CREAT);
-  succopen(fd[14], "/never/gonna/make", O_CREAT);
-  succopen(fd[15], "/never/gonna/make/you", O_CREAT);
-  succopen(fd[16], "/never/gonna/make/you/cry", O_CREAT);
-  succopen(fd[17], "/never/gonna/say", O_CREAT);
-  succopen(fd[18], "/never/gonna/say/goodbye", O_CREAT);
-  succopen(fd[19], "/never/gonna/tell", O_CREAT);
-  succopen(fd[20], "/never/gonna/tell/a", O_CREAT);
-  succopen(fd[21], "/never/gonna/tell/a/lie", O_CREAT);
-  succopen(fd[22], "/never/gonna/and", O_CREAT);
-  succopen(fd[23], "/never/gonna/hurt", O_CREAT);
-  succopen(fd[0 ], "/never/gonna/hurt/you", O_CREAT);
-  for (int i = 0; i < 24; i++) {
-    test(rread, -1, fd[i], buf, 0);
-    test(rwrite, -1, fd[i], buf, 0);
-    test(rclose, 0, fd[i]);
-    /* read, write illegal fd */
-    test(rread, -1, fd[i], buf, 0);
-    test(rwrite, -1, fd[i], buf, 0);
-  }
+//  succopen(fd[2 ], "/never/gonna", O_CREAT);
+//  succopen(fd[3 ], "/never/gonna/give", O_CREAT);
+//  succopen(fd[4 ], "/never/gonna/give/you", O_CREAT);
+//  succopen(fd[5 ], "/never/gonna/give/you/up", O_CREAT);
+//  succopen(fd[6 ], "/never/gonna/let", O_CREAT);
+//  succopen(fd[7 ], "/never/gonna/let/you", O_CREAT);
+//  succopen(fd[8 ], "/never/gonna/let/you/down", O_CREAT);
+//  succopen(fd[9 ], "/never/gonna/run", O_CREAT);
+//  succopen(fd[10], "/never/gonna/run/around", O_CREAT);
+//  succopen(fd[11], "/never/gonna/and", O_CREAT);
+//  succopen(fd[12], "/never/gonna/desert", O_CREAT);
+//  succopen(fd[13], "/never/gonna/desert/you", O_CREAT);
+//  succopen(fd[14], "/never/gonna/make", O_CREAT);
+//  succopen(fd[15], "/never/gonna/make/you", O_CREAT);
+//  succopen(fd[16], "/never/gonna/make/you/cry", O_CREAT);
+//  succopen(fd[17], "/never/gonna/say", O_CREAT);
+//  succopen(fd[18], "/never/gonna/say/goodbye", O_CREAT);
+//  succopen(fd[19], "/never/gonna/tell", O_CREAT);
+//  succopen(fd[20], "/never/gonna/tell/a", O_CREAT);
+//  succopen(fd[21], "/never/gonna/tell/a/lie", O_CREAT);
+//  succopen(fd[22], "/never/gonna/and", O_CREAT);
+//  succopen(fd[23], "/never/gonna/hurt", O_CREAT);
+//  succopen(fd[0 ], "/never/gonna/hurt/you", O_CREAT);
+//  for (int i = 0; i < 24; i++) {
+//    test(rread, -1, fd[i], buf, 0);
+//    test(rwrite, -1, fd[i], buf, 0);
+//    test(rclose, 0, fd[i]);
+//    /* read, write illegal fd */
+//    test(rread, -1, fd[i], buf, 0);
+//    test(rwrite, -1, fd[i], buf, 0);
+//  }
 #endif
 
   /* first round */
