@@ -146,7 +146,6 @@ Node *trans(char *path) { // thinking about it, maybe problem? find the truth! p
   for (; s != NULL; s = strtok(NULL, "/")) {
     father = NFF(father, s); // in this loop, there must be contents
     if (father == NULL) return NULL;
-    //printf("%s\n", s);  operate the s
   }
 
   return father;
