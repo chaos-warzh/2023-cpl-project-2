@@ -117,6 +117,7 @@ Node *touch(char *path) {
 
     if (tmp == NULL) {
       if (strtok(NULL, "/") == NULL && CheckName(s)) {
+        if (father->type != DIR_NODE) return NULL;
         int idx = NodeFindIndex();
         nodes[idx].type = FILE_NODE;
         nodes[idx].dirents = NULL;

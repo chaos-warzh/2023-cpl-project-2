@@ -315,7 +315,7 @@ int main() {
   test(rrmdir, -1, "/never");
 
   /* can't have subdir in file */
-//  succopen(f, "/never", O_CREAT);
+  succopen(f, "/never", O_CREAT);
   test(rclose, 0, f);
   test(rmkdir, -1, "/never/gonna");
   test(rmkdir, -1, "/never/gonna/give");
