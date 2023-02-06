@@ -294,16 +294,50 @@ int rmkdir(const char *pathname) { // make it simple, for large amount of use
  * 3: make his sibs / father forget him
  * from low to high.
  */
+
+void Rm(const char *pathname, int type) {
+  // do the 3 things
+  Node *father = &root;
+
+  char pth[PATH_LEN + 5];
+  sprintf(pth, "%s", pathname);
+
+  char *s = pth;
+  s = strtok(pth, "/");
+
+  Node *record_father = NULL;
+  for (; s != NULL; s = strtok(NULL, "/")) {
+    record_father = father;
+    father = NFF(father, s);
+  }
+  // remove it from family
+  assert(record_father != NULL);
+  Node *elder_son = record_father->dirents;
+  if (elder_son == father)
+    record_father->dirents = father->next_sib;
+  else
+    for (Node *iter = elder_son; iter != NULL; iter = iter->next_sib)
+      if (iter->next_sib == father)
+        iter->next_sib = father->next_sib;
+  // get rid of the nodes[]
+  int ind = (int)(father - nodes);
+  node_status[ind] = false;
+  // free ctts and name
+  free(father->name);
+  if (type == FILE_NODE)
+    free(father->content);
+}
+
 int rrmdir(const char *pathname) {
   Node *dir = trans((char *)pathname);
-  if (dir == NULL || dir->type != DIR_NODE || dir->dirents != NULL) return RF; // not exist, not empty, not a dir
-  Rm(pathname);//  how to remove it ? first you must find his father, sibs, then kill it from nodes[]// TODO();
+  if (dir == NULL || dir->type != DIR_NODE || dir->dirents != NULL || strcmp(dir->name, "/") == 0) return RF; // not exist, not empty, not a dir
+  Rm(pathname, DIR_NODE);//  how to remove it ? first you must find his father, sibs, then kill it from nodes[]//
   return 0;
 }
 
 int runlink(const char *pathname) {
   Node *file = trans((char *)pathname);
   if (file == NULL || file->type != FILE_NODE) return RF;// not exist, not a dir
-  Rm(pathname);// make his father and sibs give it up // TODO();
+  Rm(pathname, FILE_NODE);// make his father and sibs give it up
   return 0;
 }
