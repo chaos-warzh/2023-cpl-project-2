@@ -12,7 +12,7 @@
       ;                                                                        \
     else {                                                                     \
       puts("false");                                                           \
-      printf("in function %s, at line %d\n", __FUNCTION__, __LINE__)        \
+      printf("in function %s, at line %d\n", __FUNCTION__, __LINE__);          \
       exit(EXIT_SUCCESS);                                                      \
     }                                                                          \
   } while (0)
