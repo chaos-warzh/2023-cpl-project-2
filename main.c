@@ -24,7 +24,7 @@
 #ifdef LOCAL
 #define Log() printf("in function %s, at line %d\n", __FUNCTION__, __LINE__)
 #else
-#define Log() printf("in function %s, at line %d\n", __FUNCTION__, __LINE__)// actually null
+#define Log()//  printf("in function %s, at line %d\n", __FUNCTION__, __LINE__) actually null
 #endif
 
 #define test(func, expect, ...) assert(func(__VA_ARGS__) == expect)
