@@ -178,9 +178,9 @@ int ropen(const char *pathname, int flags) {
   if (strlen(pathname) > PATH_LEN) return RF;
 
   struct node *open = trans((char *)pathname);
-  if (!(flags & O_CREAT && CheckW(flags)) && open == NULL) return RF;
+  if (!(flags & O_CREAT) && open == NULL) return RF;
   else {
-    if (flags & O_CREAT && CheckW(flags)) {
+    if (flags & O_CREAT) {
       open = touch((char *)pathname);
       if (open == NULL) return RF; // need to create a new file, this is a REAL create
     }

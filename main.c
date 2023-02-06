@@ -53,16 +53,13 @@ int genfd(int *fds, int n) {
 int fd[SCALE];
 uint8_t buf[1 MB];
 uint8_t ref[1 MB];
-
+int f;
 int main() {
   srand(time(NULL));
   init_ramfs();
 
-  /* a nice tree, haha */
   test(rmkdir, 0, "/never");
-  int f;
 
-  /* fifth round */
   test(rrmdir, 0, "/never");
   test(rrmdir, -1, "/never/gonna");
 
@@ -81,7 +78,7 @@ int main() {
 //  }
 //  while (0);
 
-  succopen(f, "/never", O_CREAT);
+  succopen(f, "/never", O_CREAT); // maybe o_create understand wrong?
   test(rclose, 0, f);
   test(rmkdir, -1, "/never/gonna");
   test(rmkdir, -1, "/never/gonna/give");
