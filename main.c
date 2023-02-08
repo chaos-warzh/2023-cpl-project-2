@@ -141,7 +141,7 @@ int main() {
 #ifndef REF
   /* you can't escape this */
   /* not the same with linux syscall_open */
-  succopen(fd[1 ], "/never", O_CREAT);
+  succopen(fd[1 ], "/never", -1);
   succopen(fd[2 ], "/never/gonna", O_CREAT);
   succopen(fd[3 ], "/never/gonna/give", O_CREAT);
   succopen(fd[4 ], "/never/gonna/give/you", O_CREAT);
